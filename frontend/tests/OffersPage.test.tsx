@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import OffersPage from "../src/pages/OffersPage.tsx";
 import { adminUser, contactUser, stubFetch, studentUser } from "./helpers/fetchMock.ts";
@@ -23,6 +23,29 @@ const offers = [
 ];
 
 describe("OffersPage", () => {
+  it("transmet la période sélectionnée à l'API et revient à toutes les périodes", async () => {
+    const fetchMock = stubFetch({ "/api/offers": () => Response.json(offers) });
+
+    render(<OffersPage user={contactUser} token="jeton" onUnauthorized={vi.fn()} />);
+    await screen.findByText("Refonte du portail client");
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Période" }), {
+      target: { value: "P1" },
+    });
+    await waitFor(() => expect(fetchMock).toHaveBeenLastCalledWith(
+      "/api/offers?period=P1",
+      expect.objectContaining({ headers: { Authorization: "jeton" } }),
+    ));
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Période" }), {
+      target: { value: "" },
+    });
+    await waitFor(() => expect(fetchMock).toHaveBeenLastCalledWith(
+      "/api/offers",
+      expect.objectContaining({ headers: { Authorization: "jeton" } }),
+    ));
+  });
+
   it("affiche les offres avec leurs libellés français", async () => {
     stubFetch({ "/api/offers": () => Response.json(offers) });
 
@@ -31,7 +54,7 @@ describe("OffersPage", () => {
     expect(await screen.findByText("Refonte du portail client")).toBeInTheDocument();
     expect(screen.getByText("Soumise")).toBeInTheDocument();
     expect(screen.getByText("Attribuée")).toBeInTheDocument();
-    expect(screen.getByText("Autre")).toBeInTheDocument();
+    expect(screen.getAllByText("Autre")).toHaveLength(2);
     expect(screen.getByText("2 offres")).toBeInTheDocument();
     expect(screen.getByText("Les offres que vous avez déposées.")).toBeInTheDocument();
   });
