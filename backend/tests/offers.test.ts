@@ -50,6 +50,37 @@ describe("GET /offers : visibilité selon le profil", () => {
     });
   });
 
+  describe("GET /offers : filtre de période", () => {
+    it("filtre les offres d'un administrateur sans modifier les règles de visibilité", async () => {
+      const response = await request(app)
+        .get("/offers?period=P1")
+        .set("Authorization", tokenFor("ADMIN", ADMINISTRATOR.ANNE_LECLERCQ));
+
+      expect(response.status).toBe(200);
+      expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body.every((offer: { period: string }) => offer.period === "P1")).toBe(true);
+    });
+
+    it("combine le filtre de période avec la visibilité d'un étudiant", async () => {
+      const response = await request(app)
+        .get("/offers?period=P1")
+        .set("Authorization", tokenFor("STUDENT", STUDENT.LUCAS_DUPONT));
+
+      expect(response.status).toBe(200);
+      expect(response.body.every((offer: { period: string; status: string }) =>
+        offer.period === "P1" && offer.status === "PUBLISHED")).toBe(true);
+    });
+
+    it.each(["P3", ""])("refuse une période invalide (%s)", async (period) => {
+      const response = await request(app)
+        .get(`/offers?period=${period}`)
+        .set("Authorization", tokenFor("ADMIN", ADMINISTRATOR.ANNE_LECLERCQ));
+
+      expect(response.status).toBe(400);
+      expect(response.body.error.code).toBe("INVALID_QUERY");
+    });
+  });
+
   it("ne montre que les offres publiées à un étudiant", async () => {
     const response = await listOffersAs("STUDENT", STUDENT.LUCAS_DUPONT);
 
