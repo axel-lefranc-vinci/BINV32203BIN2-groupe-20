@@ -14,7 +14,17 @@ interface ApplicationsPageProps {
   onUnauthorized: () => void;
 }
 
-const ApplicationsTable = ({ applications }: { applications: Application[] }) => (
+interface ApplicationsTableProps {
+  applications: Application[];
+  isWithdrawing: boolean;
+  onWithdraw: (applicationId: number) => void;
+}
+
+const ApplicationsTable = ({
+  applications,
+  isWithdrawing,
+  onWithdraw,
+}: ApplicationsTableProps) => (
   <div className="table-wrapper">
     <table className="data-table">
       <thead>
@@ -23,6 +33,7 @@ const ApplicationsTable = ({ applications }: { applications: Application[] }) =>
           <th scope="col">Entreprise</th>
           <th scope="col">Message</th>
           <th scope="col">Statut</th>
+          <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -37,6 +48,18 @@ const ApplicationsTable = ({ applications }: { applications: Application[] }) =>
                 tone={APPLICATION_STATUS_TONES[application.status]}
               />
             </td>
+            <td>
+              {application.status === "IN_PROGRESS" && (
+                <button
+                  className="button"
+                  type="button"
+                  disabled={isWithdrawing}
+                  onClick={() => onWithdraw(application.id)}
+                >
+                  Retirer
+                </button>
+              )}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -45,7 +68,16 @@ const ApplicationsTable = ({ applications }: { applications: Application[] }) =>
 );
 
 const ApplicationsPage = ({ token, onUnauthorized }: ApplicationsPageProps) => {
-  const { applications, isLoading, error } = useMyApplications(token, onUnauthorized);
+  const { applications, isLoading, error, withdraw, isWithdrawing } = useMyApplications(
+    token,
+    onUnauthorized,
+  );
+
+  const handleWithdraw = (applicationId: number) => {
+    if (window.confirm("Confirmez-vous le retrait de cette candidature ?")) {
+      void withdraw(applicationId);
+    }
+  };
 
   return (
     <section>
@@ -58,7 +90,11 @@ const ApplicationsPage = ({ token, onUnauthorized }: ApplicationsPageProps) => {
       ) : applications.length === 0 ? (
         <EmptyState message="Vous n’avez aucune candidature." />
       ) : (
-        <ApplicationsTable applications={applications} />
+        <ApplicationsTable
+          applications={applications}
+          isWithdrawing={isWithdrawing}
+          onWithdraw={handleWithdraw}
+        />
       )}
     </section>
   );

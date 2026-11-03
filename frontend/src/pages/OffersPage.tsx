@@ -32,9 +32,29 @@ const OffersPage = ({ user, token, onUnauthorized }: OffersPageProps) => {
     .map((application) => application.offerId);
 
   const handleApply = async (offerId: number, message: string) => {
-    const succeeded = await applications.apply(offerId, message);
-    if (succeeded) setAppliedOfferIds((ids) => [...ids, offerId]);
+    const created = await applications.apply(offerId, message);
+    if (created !== null) {
+      setAppliedOfferIds((ids) => [...ids, offerId]);
+      myApplications.addApplication(created);
+    }
   };
+
+  const handleWithdraw = async (offerId: number) => {
+    const application = myApplications.applications.find(
+      (candidate) => candidate.offerId === offerId && candidate.status === "IN_PROGRESS",
+    );
+    if (
+      application !== undefined &&
+      window.confirm("Confirmez-vous le retrait de cette candidature ?")
+    ) {
+      const withdrawn = await myApplications.withdraw(application.id);
+      if (withdrawn) setAppliedOfferIds((ids) => ids.filter((id) => id !== offerId));
+    }
+  };
+
+  const withdrawableOfferIds = myApplications.applications
+    .filter((application) => application.status === "IN_PROGRESS")
+    .map((application) => application.offerId);
 
   const renderContent = () => {
     if (error) return <ErrorState message={error} />;
@@ -51,9 +71,12 @@ const OffersPage = ({ user, token, onUnauthorized }: OffersPageProps) => {
           canApply={user.kind === "STUDENT"}
           appliedOfferIds={appliedOfferIds}
           blockedOfferIds={blockedOfferIds}
+          withdrawableOfferIds={withdrawableOfferIds}
           applicationsLoading={myApplications.isLoading}
           isSubmitting={applications.isSubmitting}
+          isWithdrawing={myApplications.isWithdrawing}
           onApply={handleApply}
+          onWithdraw={handleWithdraw}
         />
       </>
     );

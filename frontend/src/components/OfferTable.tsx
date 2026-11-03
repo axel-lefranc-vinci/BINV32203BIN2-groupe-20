@@ -7,9 +7,12 @@ interface OfferTableProps {
   canApply?: boolean;
   appliedOfferIds?: number[];
   blockedOfferIds?: number[];
+  withdrawableOfferIds?: number[];
   applicationsLoading?: boolean;
   isSubmitting?: boolean;
+  isWithdrawing?: boolean;
   onApply?: (offerId: number, message: string) => Promise<void>;
+  onWithdraw?: (offerId: number) => Promise<void>;
 }
 
 const OfferTable = ({
@@ -17,9 +20,12 @@ const OfferTable = ({
   canApply = false,
   appliedOfferIds = [],
   blockedOfferIds = [],
+  withdrawableOfferIds = [],
   applicationsLoading = false,
   isSubmitting = false,
+  isWithdrawing = false,
   onApply,
+  onWithdraw,
 }: OfferTableProps) => (
   <div className="table-wrapper">
     <table className="data-table">
@@ -48,7 +54,21 @@ const OfferTable = ({
             </td>
             {canApply && (
               <td>
-                {appliedOfferIds.includes(offer.id) || blockedOfferIds.includes(offer.id) ? (
+                {withdrawableOfferIds.includes(offer.id) ? (
+                  <div className="application-actions">
+                    <button className="button" type="button" disabled>
+                      Candidature déjà postulée
+                    </button>
+                    <button
+                      className="button"
+                      type="button"
+                      disabled={isWithdrawing}
+                      onClick={() => void onWithdraw?.(offer.id)}
+                    >
+                      Retirer
+                    </button>
+                  </div>
+                ) : appliedOfferIds.includes(offer.id) || blockedOfferIds.includes(offer.id) ? (
                   <button className="button" type="button" disabled>
                     Candidature déjà postulée
                   </button>

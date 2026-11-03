@@ -6,6 +6,11 @@ interface ApplicationKey {
   studentId: number;
 }
 
+interface ApplicationIdKey {
+  id: number;
+  studentId: number;
+}
+
 interface OfferStatus {
   status: string;
 }
@@ -34,6 +39,11 @@ export const createApplicationsRepository = (db: Db) => {
     UPDATE applications
     SET message = @message, status = 'IN_PROGRESS', applied_at = datetime('now')
     WHERE id = @id AND status = 'WITHDRAWN'
+  `);
+  const withdrawApplication = db.prepare(`
+    UPDATE applications
+    SET status = 'WITHDRAWN'
+    WHERE id = @id AND student_id = @studentId AND status = 'IN_PROGRESS'
   `);
 
   const save = db.transaction((input: CreateApplicationInput, studentId: number): ApplicationDbo => {
@@ -66,6 +76,22 @@ export const createApplicationsRepository = (db: Db) => {
         .all({ studentId }),
     findByKey: (offerId: number, studentId: number): ApplicationDbo | undefined =>
       findByKey.get({ offerId, studentId }),
+    findByIdAndStudent: (id: number, studentId: number): ApplicationDbo | undefined =>
+      db
+        .prepare<ApplicationIdKey, ApplicationDbo>(`
+          ${applicationSelect}
+          WHERE a.id = @id AND a.student_id = @studentId
+        `)
+        .get({ id, studentId }),
+    withdraw: (id: number, studentId: number): ApplicationDbo | undefined => {
+      withdrawApplication.run({ id, studentId });
+      return db
+        .prepare<ApplicationIdKey, ApplicationDbo>(`
+          ${applicationSelect}
+          WHERE a.id = @id AND a.student_id = @studentId
+        `)
+        .get({ id, studentId });
+    },
     findOfferStatus: (offerId: number): string | undefined =>
       findOfferStatus.get({ offerId })?.status,
     save,
