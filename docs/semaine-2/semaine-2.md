@@ -116,3 +116,8 @@ frontend: npm.cmd run build                         # succès
 Exemple de comportement couvert par un test : une candidature `IN_PROGRESS` peut être retirée, puis la même ligne est réactivée par une nouvelle candidature ; une candidature `SELECTED` renvoie une erreur HTTP 409 et reste inchangée.
 
 La commande `npm.cmd run db:reset` a d'abord échoué parce que le serveur détenait encore la base SQLite (`EPERM`). Après arrêt explicite du serveur, la réinitialisation a réussi. Le rapport de validation runtime détaillé est conservé dans le dossier de session et n'est pas ajouté au dépôt.
+
+
+utilisation des crédits 
+Axel 13 %
+Mitica 2 %
