@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { toApplicationDto } from "../mappers/application.mapper.ts";
 import { getCurrentUser } from "../middlewares/authenticate.ts";
+import { APPLICATION_STATUSES, type ApplicationStatus } from "../models/application.ts";
 import type { ApplicationsService } from "../services/applications.service.ts";
 import { HttpError } from "../utils/httpError.ts";
 
@@ -33,11 +34,26 @@ const parseApplicationId = (value: string): number => {
   return id;
 };
 
+const parseStatusBody = (value: unknown): ApplicationStatus => {
+  const status =
+    typeof value === "object" && value !== null
+      ? (value as Record<string, unknown>).status
+      : undefined;
+  if (typeof status !== "string" || !APPLICATION_STATUSES.includes(status as ApplicationStatus)) {
+    throw new HttpError(400, "INVALID_STATUS", "Le statut de candidature est invalide");
+  }
+  return status as ApplicationStatus;
+};
+
 export const createApplicationsRouter = (applicationsService: ApplicationsService) => {
   const router = Router();
 
   router.get("/mine", (req, res) => {
     res.json(applicationsService.listMine(getCurrentUser(req)).map(toApplicationDto));
+  });
+
+  router.get("/company", (req, res) => {
+    res.json(applicationsService.listForCompanyContact(getCurrentUser(req)).map(toApplicationDto));
   });
 
   router.post("/", (req, res) => {
@@ -53,6 +69,15 @@ export const createApplicationsRouter = (applicationsService: ApplicationsServic
     const application = applicationsService.withdraw(
       getCurrentUser(req),
       parseApplicationId(req.params.id),
+    );
+    res.json(toApplicationDto(application));
+  });
+
+  router.patch("/:id/status", (req, res) => {
+    const application = applicationsService.updateStatus(
+      getCurrentUser(req),
+      parseApplicationId(req.params.id),
+      parseStatusBody(req.body),
     );
     res.json(toApplicationDto(application));
   });
