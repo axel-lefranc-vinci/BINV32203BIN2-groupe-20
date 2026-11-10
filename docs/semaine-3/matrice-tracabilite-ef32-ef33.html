@@ -171,91 +171,91 @@
               <tr>
                 <td>EF-32</td>
                 <td>Créer une candidature avec un message. La réponse doit être <code>201</code> et conserver le message.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
                 <td><code>withMessage.status === 201</code> et <code>withMessage.body.message === "Projet intéressant"</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Créer une candidature sans message. Le message facultatif doit être normalisé en <code>null</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
                 <td><code>withoutMessage.status === 201</code> et <code>withoutMessage.body.message === null</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Refuser une candidature à une offre non publiée. Résultat attendu : erreur métier <code>409</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
                 <td><code>unpublishedResponse.status === 409</code> et code <code>OFFER_NOT_PUBLISHED</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Refuser une candidature créée par un contact. Résultat attendu : <code>403 FORBIDDEN</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
                 <td><code>contactResponse.status === 403</code> et code <code>FORBIDDEN</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Refuser un doublon actif pour le même étudiant et la même offre. Résultat attendu : <code>409 APPLICATION_EXISTS</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse un doublon actif et un corps invalide</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse un doublon actif et un corps invalide</div></td>
                 <td><code>response.status === 409</code> et code <code>APPLICATION_EXISTS</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Refuser un corps invalide, par exemple <code>offerId</code> envoyé comme chaîne. Résultat attendu : <code>400 INVALID_BODY</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse un doublon actif et un corps invalide</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse un doublon actif et un corps invalide</div></td>
                 <td><code>response.status === 400</code> et code <code>INVALID_BODY</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Retirer une candidature <code>IN_PROGRESS</code>. Résultat attendu : <code>200</code> et statut <code>WITHDRAWN</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">retire une candidature en cours puis la réactive</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">retire une candidature en cours puis la réactive</div></td>
                 <td><code>withdrawn.status === 200</code> et <code>withdrawn.body.status === "WITHDRAWN"</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Re-candidater après retrait. La ligne peut être réactivée en <code>IN_PROGRESS</code> sans créer de doublon.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">retire une candidature en cours puis la réactive</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">retire une candidature en cours puis la réactive</div></td>
                 <td><code>reapplied.status === 201</code>, même <code>id === 1</code> et statut <code>IN_PROGRESS</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-32</td>
                 <td>Refuser le retrait d'une candidature déjà traitée. Résultat attendu : <code>409</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse le retrait d'une candidature traitée</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse le retrait d'une candidature traitée</div></td>
                 <td><code>response.status === 409</code> et code <code>APPLICATION_NOT_WITHDRAWABLE</code>.</td>
                 <td><span class="badge partial">Partiel</span><br><small><code>SELECTED</code> testé ; <code>REJECTED</code> non testé séparément.</small></td>
               </tr>
               <tr>
                 <td>EF-33</td>
                 <td>Un étudiant ne doit voir que ses propres candidatures, jamais celles d'un autre étudiant.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">isole la liste des candidatures par étudiant</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">isole la liste des candidatures par étudiant</div></td>
                 <td>Réponses <code>200</code> et listes exactes : Lucas reçoit l'offre <code>1</code>, Mateusz l'offre <code>6</code>.</td>
                 <td><span class="badge covered">Couvert</span></td>
               </tr>
               <tr>
                 <td>EF-33</td>
                 <td>Retourner les informations utiles de l'offre, de l'entreprise et le statut.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
                 <td>Les assertions vérifient <code>offerId</code> et <code>status</code> dans la liste.</td>
                 <td><span class="badge partial">Partiel</span><br><small>Titre et entreprise non assertés explicitement.</small></td>
               </tr>
               <tr>
                 <td>EF-33</td>
                 <td>Exposer les quatre statuts : <code>IN_PROGRESS</code>, <code>SELECTED</code>, <code>REJECTED</code>, <code>WITHDRAWN</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">tests de création, retrait et réactivation</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">tests de création, retrait et réactivation</div></td>
                 <td><code>IN_PROGRESS</code>, <code>WITHDRAWN</code> et <code>SELECTED</code> sont vérifiés par assertions.</td>
                 <td><span class="badge partial">Partiel</span><br><small><code>REJECTED</code> est présent dans le seed mais non asserté par cette route.</small></td>
               </tr>
               <tr>
                 <td>EF-33</td>
                 <td>Un contact ne doit pas être assimilé à un étudiant et ne peut pas consulter <code>/applications/mine</code>.</td>
-                <td><a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
                 <td>Le test vérifie l'interdiction de candidater par un contact ; il ne teste pas <code>GET /applications/mine</code>.</td>
                 <td><span class="badge absent">Absent</span></td>
               </tr>
@@ -270,7 +270,7 @@
           <article>
             <h3>Fonctionnalité contact d'entreprise</h3>
             <p>
-              <a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/companies.test.ts">companies.test.ts</a>
+              <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/companies.test.ts">companies.test.ts</a>
               vérifie que le contact peut lister et modifier les candidatures
               des offres de ses entreprises.
             </p>
@@ -283,7 +283,7 @@
           <article>
             <h3>Données de démonstration</h3>
             <p>
-              Le <a href="seed.md">seed</a> fournit des cas utiles pour les
+              Le <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/docs/seed.md">seed</a> fournit des cas utiles pour les
               essais manuels : deux candidatures en cours, une candidature
               retenue, une non retenue et une retirée.
             </p>
@@ -318,7 +318,7 @@
           </article>
         </div>
         <p class="note">
-          Les tests ajoutés dans <a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts">offers.test.ts</a>
+          Les tests ajoutés dans <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a>
           feraient échouer la suite si l'API acceptait un doublon actif ou
           convertissait silencieusement un <code>offerId</code> invalide.
         </p>
@@ -344,7 +344,7 @@
 
       <footer>
         Source des exigences :
-        <a href="cdc_gesta_developpement.md">docs/cdc_gesta_developpement.md</a>,
+        <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/docs/cdc_gesta_developpement.md">docs/cdc_gesta_developpement.md</a>,
         EF-32 et EF-33. Page générée à partir des tests réellement présents dans le dépôt.
       </footer>
     </main>
