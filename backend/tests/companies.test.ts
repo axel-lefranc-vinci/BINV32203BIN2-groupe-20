@@ -1,6 +1,6 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
-import { ADMINISTRATOR, COMPANY, CONTACT, STUDENT } from "../src/db/seed/seedIds.ts";
+import { ADMINISTRATOR, COMPANY, CONTACT, OFFER, STUDENT } from "../src/db/seed/seedIds.ts";
 import { createTestApp, tokenFor } from "./helpers/testApp.ts";
 
 let app: ReturnType<typeof createTestApp>;
@@ -101,5 +101,35 @@ describe("GET /companies : recherche", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.error.code).toBe("INVALID_QUERY");
+  });
+});
+
+describe("candidatures des contacts d'entreprise", () => {
+  it("permet à un contact de lister et modifier les candidatures de ses offres", async () => {
+    const list = await request(app)
+      .get("/applications/company")
+      .set("Authorization", tokenFor("CONTACT", CONTACT.CLAIRE_DUMONT));
+    const update = await request(app)
+      .patch("/applications/1/status")
+      .set("Authorization", tokenFor("CONTACT", CONTACT.CLAIRE_DUMONT))
+      .send({ status: "SELECTED" });
+
+    expect(list.status).toBe(200);
+    expect(list.body).toEqual([
+      expect.objectContaining({ id: 2, offerId: OFFER.FLEET_APP, studentFirstName: "Inès" }),
+      expect.objectContaining({ id: 1, offerId: OFFER.FLEET_APP, studentFirstName: "Lucas" }),
+    ]);
+    expect(update.status).toBe(200);
+    expect(update.body.status).toBe("SELECTED");
+  });
+
+  it("refuse à un contact d'une autre entreprise de modifier la candidature", async () => {
+    const response = await request(app)
+      .patch("/applications/1/status")
+      .set("Authorization", tokenFor("CONTACT", CONTACT.MARC_LEJEUNE))
+      .send({ status: "REJECTED" });
+
+    expect(response.status).toBe(404);
+    expect(response.body.error.code).toBe("APPLICATION_NOT_FOUND");
   });
 });

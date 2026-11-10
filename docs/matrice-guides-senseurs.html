@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matrice des guides et des senseurs — Gesta</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #172033;
+        --muted: #64748b;
+        --line: #dbe4f0;
+        --background: #f5f8fc;
+        --surface: #ffffff;
+        --guide: #2563eb;
+        --sensor: #0f766e;
+        --inferred: #7c3aed;
+        --computed: #0f766e;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: var(--background);
+        line-height: 1.5;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 3rem 0 4rem;
+      }
+
+      header {
+        margin-bottom: 2rem;
+        padding: 2rem;
+        color: white;
+        background: linear-gradient(135deg, #1d4ed8, #0f766e);
+        border-radius: 18px;
+        box-shadow: 0 14px 35px rgb(15 23 42 / 15%);
+      }
+
+      h1, h2 { margin-top: 0; }
+      h1 { margin-bottom: .5rem; font-size: clamp(1.8rem, 4vw, 2.8rem); }
+      h2 { margin-top: 2.5rem; font-size: 1.45rem; }
+      header p { max-width: 760px; margin-bottom: 0; color: #dbeafe; }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .75rem;
+        margin: 1.25rem 0;
+      }
+
+      .legend span, .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .3rem .65rem;
+        font-size: .82rem;
+        font-weight: 700;
+        border-radius: 999px;
+      }
+
+      .legend .guide { color: #1e40af; background: #dbeafe; }
+      .legend .sensor { color: #115e59; background: #ccfbf1; }
+      .legend .inferred { color: #6d28d9; background: #ede9fe; }
+      .legend .computed { color: #115e59; background: #ccfbf1; }
+
+      .table-card {
+        overflow-x: auto;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgb(15 23 42 / 6%);
+      }
+
+      table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        padding: 1rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--line);
+      }
+
+      th {
+        color: #334155;
+        font-size: .8rem;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        background: #eef4fb;
+      }
+
+      tr:last-child td { border-bottom: 0; }
+      tbody tr:hover { background: #f8fbff; }
+      td:first-child { width: 165px; font-weight: 700; }
+      td:nth-child(2) { width: 190px; font-weight: 650; }
+      code {
+        padding: .12rem .3rem;
+        color: #334155;
+        font-size: .9em;
+        background: #eef2f7;
+        border-radius: 4px;
+      }
+
+      a {
+        color: #1d4ed8;
+        text-decoration: underline;
+        text-decoration-thickness: .08em;
+        text-underline-offset: .15em;
+      }
+
+      a:hover { color: #1e40af; }
+
+      .tag.guide { color: #1e40af; background: #dbeafe; }
+      .tag.sensor { color: #115e59; background: #ccfbf1; }
+      .tag.inferred { color: #6d28d9; background: #ede9fe; }
+      .tag.computed { color: #115e59; background: #ccfbf1; }
+
+      .note {
+        margin-top: 1.25rem;
+        padding: 1rem 1.1rem;
+        color: #475569;
+        background: #fff;
+        border-left: 4px solid #94a3b8;
+        border-radius: 8px;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+
+      .flow article {
+        padding: 1.25rem;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+
+      .flow strong { display: block; margin-bottom: .35rem; }
+      .flow p { margin: 0; color: var(--muted); }
+
+      footer {
+        margin-top: 2rem;
+        color: var(--muted);
+        font-size: .9rem;
+      }
+
+      @media (max-width: 700px) {
+        main { width: min(100% - 1rem, 1180px); padding-top: 1rem; }
+        header { padding: 1.35rem; border-radius: 12px; }
+        .flow { grid-template-columns: 1fr; }
+      }
+
+      @media print {
+        body { background: white; }
+        main { width: 100%; padding: 0; }
+        header { color: black; background: white; box-shadow: none; border: 2px solid #1d4ed8; }
+        header p { color: #334155; }
+        .table-card { box-shadow: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Matrice des guides et des senseurs</h1>
+        <p>
+          Bilan du harnais agentique du projet Gesta — distinguer ce qui guide
+          l'agent avant la modification de ce qui vérifie le résultat après exécution.
+        </p>
+      </header>
+
+      <div class="legend" aria-label="Légende">
+        <span class="guide">Guide · feedforward</span>
+        <span class="sensor">Senseur · feedback</span>
+        <span class="inferred">Inférentiel · interprété</span>
+        <span class="computed">Computationnel · exécutable</span>
+      </div>
+
+      <section aria-labelledby="matrix-title">
+        <h2 id="matrix-title">Inventaire vérifié</h2>
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Catégorie</th>
+                <th>Mécanisme</th>
+                <th>Emplacement / outil</th>
+                <th>Rôle et exemple</th>
+                <th>Vérification effectuée</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag guide">Guide</span><br><span class="tag inferred">Inférentiel</span></td>
+                <td>Instructions Copilot</td>
+                <td><a href="../.github/copilot-instructions.md"><code>.github/copilot-instructions.md</code></a></td>
+                <td>Impose les couches <code>controllers → services → repositories</code>, les erreurs <code>HttpError</code>, les imports <code>.ts</code> et <code>npm run check</code>.</td>
+                <td>Fichier lu en entier ; consignes comparées à l'architecture et aux scripts.</td>
+              </tr>
+              <tr>
+                <td><span class="tag guide">Guide</span><br><span class="tag inferred">Inférentiel</span></td>
+                <td>Architecture documentée</td>
+                <td><a href="architecture.md"><code>docs/architecture.md</code></a></td>
+                <td>Décrit le flux HTTP backend et le flux frontend <code>pages → hooks → services/utils → models</code>.</td>
+                <td>Fichier lu ; organisation vérifiée dans les sources.</td>
+              </tr>
+              <tr>
+                <td><span class="tag guide">Guide</span><br><span class="tag computed">Computationnel</span></td>
+                <td>Scripts npm</td>
+                <td>
+                  <a href="../package.json"><code>package.json</code></a>,
+                  <a href="../backend/package.json"><code>backend/package.json</code></a>,
+                  <a href="../frontend/package.json"><code>frontend/package.json</code></a>
+                </td>
+                <td>Fournit les commandes <code>lint</code>, <code>typecheck</code>, <code>test</code>, <code>build</code> et <code>check</code>.</td>
+                <td>Exécuté avec <code>npm run check</code>.</td>
+              </tr>
+              <tr>
+                <td><span class="tag sensor">Senseur</span><br><span class="tag computed">Computationnel</span></td>
+                <td>TypeScript</td>
+                <td><code>tsc --noEmit</code>, <code>tsc -b</code></td>
+                <td>Détecte les erreurs de types et de compilation.</td>
+                <td>Exécuté avec succès.</td>
+              </tr>
+              <tr>
+                <td><span class="tag sensor">Senseur</span><br><span class="tag computed">Computationnel</span></td>
+                <td>Oxlint</td>
+                <td><code>npm run lint</code></td>
+                <td>Vérifie les règles statiques du backend et du frontend.</td>
+                <td>Exécuté avec succès dans <code>npm run check</code>.</td>
+              </tr>
+              <tr>
+                <td><span class="tag sensor">Senseur</span><br><span class="tag computed">Computationnel</span></td>
+                <td>Vitest + Supertest</td>
+                <td>
+                  <a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/offers.test.ts"><code>offers.test.ts</code></a>,
+                  <a href="vscode://file/C:/Vinci/BLOC4/IA/Project/BINV32203BIN2-groupe-20/backend/tests/auth.test.ts"><code>auth.test.ts</code></a>
+                </td>
+                <td>Vérifie les réponses HTTP, les statuts, les droits et les transitions de candidature.</td>
+                <td>Exécuté ; 120 tests backend et 47 tests frontend réussis.</td>
+              </tr>
+              <tr>
+                <td><span class="tag sensor">Senseur</span><br><span class="tag computed">Computationnel</span></td>
+                <td>Build</td>
+                <td><code>npm run build</code></td>
+                <td>Vérifie que les deux workspaces produisent une version compilable.</td>
+                <td>Exécuté avec succès dans <code>npm run check</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">
+          Aucun générateur de code dédié ni aucune revue automatisée dans une CI
+          n'a été trouvé dans le dépôt. Les quatre cases de la matrice ne sont
+          donc pas remplies artificiellement.
+        </p>
+      </section>
+
+      <section aria-labelledby="loop-title">
+        <h2 id="loop-title">Boucle de vérification</h2>
+        <div class="flow">
+          <article>
+            <strong>1 · Guider</strong>
+            <p>Cahier des charges, architecture et instructions Copilot orientent la modification.</p>
+          </article>
+          <article>
+            <strong>2 · Exécuter</strong>
+            <p>Typecheck, lint, tests et build produisent un retour observable.</p>
+          </article>
+          <article>
+            <strong>3 · Corriger</strong>
+            <p>L'échec est analysé, corrigé, puis la commande est relancée ; la validation humaine clôt la boucle.</p>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        Source : bilan semaine 8 du projet Gesta.
+      </footer>
+    </main>
+  </body>
+</html>
