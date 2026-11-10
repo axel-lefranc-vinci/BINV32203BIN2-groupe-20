@@ -22,8 +22,15 @@
         margin: 0 auto;
         padding: 2rem 1.25rem 4rem;
         color: var(--ink);
-        background: #fff;
+        background: #f1f5f9;
         font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      header {
+        margin-bottom: 2rem;
+        padding: 1.5rem 1.75rem;
+        border: 1px solid #bae6fd;
+        border-radius: .85rem;
+        background: linear-gradient(135deg, #e0f2fe, #f8fafc);
       }
       h1, h2, h3 { line-height: 1.2; color: #0f172a; }
       h1 { margin-bottom: .4rem; font-size: clamp(2rem, 5vw, 3.2rem); }
@@ -69,11 +76,22 @@
         color: #e2e8f0;
         background: var(--code);
       }
+      pre code {
+        padding: 0;
+        color: inherit;
+        background: transparent;
+      }
       .panel {
         margin: 1rem 0;
         padding: 1rem 1.2rem;
         border-left: 4px solid var(--accent);
         background: var(--panel);
+      }
+      main {
+        padding: 1.5rem;
+        border: 1px solid var(--line);
+        border-radius: .85rem;
+        background: #fff;
       }
       table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
       th, td { padding: .7rem; border: 1px solid var(--line); text-align: left; vertical-align: top; }
