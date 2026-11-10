@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matrice de traçabilité EF-32 / EF-33 — Gesta</title>
+    <style>
+      :root {
+        --ink: #172033;
+        --muted: #64748b;
+        --line: #dbe4f0;
+        --background: #f5f8fc;
+        --surface: #fff;
+        --blue: #1d4ed8;
+        --green: #047857;
+        --orange: #b45309;
+        --red: #b91c1c;
+        --purple: #6d28d9;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--background);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+      main { width: min(1500px, calc(100% - 2rem)); margin: auto; padding: 2rem 0 4rem; }
+      header {
+        margin-bottom: 1.75rem;
+        padding: 2rem;
+        color: white;
+        background: linear-gradient(135deg, #1e3a8a, #0f766e);
+        border-radius: 18px;
+        box-shadow: 0 14px 35px rgb(15 23 42 / 15%);
+      }
+      h1 { margin: 0 0 .5rem; font-size: clamp(1.7rem, 3vw, 2.5rem); }
+      h2 { margin: 2.25rem 0 1rem; font-size: 1.45rem; }
+      header p { max-width: 900px; margin: 0; color: #dbeafe; }
+      .intro, .note, .summary-card {
+        padding: 1rem 1.15rem;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .intro { margin-bottom: 1.25rem; }
+      .note { margin-top: 1rem; border-left: 4px solid var(--orange); }
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      .summary-card strong { display: block; font-size: 1.6rem; }
+      .summary-card span { color: var(--muted); font-size: .9rem; }
+      .table-card {
+        overflow-x: auto;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgb(15 23 42 / 6%);
+      }
+      table { width: 100%; min-width: 1250px; border-collapse: collapse; }
+      th, td {
+        padding: .9rem 1rem;
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--line);
+      }
+      th {
+        color: #334155;
+        font-size: .76rem;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        background: #eef4fb;
+      }
+      tbody tr:hover { background: #f8fbff; }
+      tr:last-child td { border-bottom: 0; }
+      td:first-child { width: 75px; font-weight: 800; white-space: nowrap; }
+      td:nth-child(2) { width: 255px; }
+      td:nth-child(5) { width: 125px; }
+      code {
+        padding: .12rem .3rem;
+        color: #334155;
+        font-size: .88em;
+        background: #eef2f7;
+        border-radius: 4px;
+      }
+      a { color: var(--blue); text-decoration: underline; text-underline-offset: .15em; }
+      a:hover { color: #1e40af; }
+      .badge {
+        display: inline-block;
+        padding: .25rem .55rem;
+        font-size: .78rem;
+        font-weight: 800;
+        border-radius: 999px;
+      }
+      .covered { color: #166534; background: #dcfce7; }
+      .partial { color: #92400e; background: #fef3c7; }
+      .absent { color: #991b1b; background: #fee2e2; }
+      .out { color: var(--purple); background: #ede9fe; }
+      .test-name { margin-top: .35rem; color: #475569; font-size: .9rem; }
+      .assertion { margin: .35rem 0 0; color: #334155; font-size: .9rem; }
+      .two-columns {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+      .two-columns article {
+        padding: 1.15rem;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+      }
+      .two-columns h3 { margin-top: 0; }
+      li + li { margin-top: .5rem; }
+      footer { margin-top: 2rem; color: var(--muted); font-size: .9rem; }
+      @media (max-width: 800px) {
+        main { width: min(100% - 1rem, 1500px); padding-top: 1rem; }
+        header { padding: 1.35rem; border-radius: 12px; }
+        .summary, .two-columns { grid-template-columns: 1fr 1fr; }
+      }
+      @media print {
+        body { background: white; }
+        main { width: 100%; padding: 0; }
+        header { color: black; background: white; border: 2px solid #1e3a8a; box-shadow: none; }
+        header p { color: #334155; }
+        .table-card { box-shadow: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Matrice de traçabilité des exigences</h1>
+        <p>
+          EF-32 — candidater et retirer sa candidature · EF-33 — consulter ses
+          candidatures et leur statut. Une ligne est « couverte » uniquement si
+          les assertions du test vérifient réellement le résultat attendu.
+        </p>
+      </header>
+
+      <section class="intro">
+        <strong>Méthode de lecture.</strong>
+        Les tests ont été reliés aux cas précis du cahier des charges. Un simple
+        appel HTTP sans assertion sur le résultat n'est pas considéré comme une
+        couverture suffisante. Les chemins ci-dessous sont cliquables.
+      </section>
+
+      <section class="summary" aria-label="Résumé de la couverture">
+        <div class="summary-card"><strong>9</strong><span>cas couverts</span></div>
+        <div class="summary-card"><strong>3</strong><span>cas partiellement couverts</span></div>
+        <div class="summary-card"><strong>1</strong><span>cas absent identifié</span></div>
+        <div class="summary-card"><strong>167</strong><span>tests passés avec npm run check</span></div>
+      </section>
+
+      <section aria-labelledby="matrix-title">
+        <h2 id="matrix-title">Matrice de traçabilité</h2>
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Exigence</th>
+                <th>Cas à vérifier et résultat attendu</th>
+                <th>Test existant</th>
+                <th>Assertions utiles</th>
+                <th>Couverture</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>EF-32</td>
+                <td>Créer une candidature avec un message. La réponse doit être <code>201</code> et conserver le message.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
+                <td><code>withMessage.status === 201</code> et <code>withMessage.body.message === "Projet intéressant"</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Créer une candidature sans message. Le message facultatif doit être normalisé en <code>null</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
+                <td><code>withoutMessage.status === 201</code> et <code>withoutMessage.body.message === null</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Refuser une candidature à une offre non publiée. Résultat attendu : erreur métier <code>409</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
+                <td><code>unpublishedResponse.status === 409</code> et code <code>OFFER_NOT_PUBLISHED</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Refuser une candidature créée par un contact. Résultat attendu : <code>403 FORBIDDEN</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
+                <td><code>contactResponse.status === 403</code> et code <code>FORBIDDEN</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Refuser un doublon actif pour le même étudiant et la même offre. Résultat attendu : <code>409 APPLICATION_EXISTS</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse un doublon actif et un corps invalide</div></td>
+                <td><code>response.status === 409</code> et code <code>APPLICATION_EXISTS</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Refuser un corps invalide, par exemple <code>offerId</code> envoyé comme chaîne. Résultat attendu : <code>400 INVALID_BODY</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse un doublon actif et un corps invalide</div></td>
+                <td><code>response.status === 400</code> et code <code>INVALID_BODY</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Retirer une candidature <code>IN_PROGRESS</code>. Résultat attendu : <code>200</code> et statut <code>WITHDRAWN</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">retire une candidature en cours puis la réactive</div></td>
+                <td><code>withdrawn.status === 200</code> et <code>withdrawn.body.status === "WITHDRAWN"</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Re-candidater après retrait. La ligne peut être réactivée en <code>IN_PROGRESS</code> sans créer de doublon.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">retire une candidature en cours puis la réactive</div></td>
+                <td><code>reapplied.status === 201</code>, même <code>id === 1</code> et statut <code>IN_PROGRESS</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-32</td>
+                <td>Refuser le retrait d'une candidature déjà traitée. Résultat attendu : <code>409</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">refuse le retrait d'une candidature traitée</div></td>
+                <td><code>response.status === 409</code> et code <code>APPLICATION_NOT_WITHDRAWABLE</code>.</td>
+                <td><span class="badge partial">Partiel</span><br><small><code>SELECTED</code> testé ; <code>REJECTED</code> non testé séparément.</small></td>
+              </tr>
+              <tr>
+                <td>EF-33</td>
+                <td>Un étudiant ne doit voir que ses propres candidatures, jamais celles d'un autre étudiant.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">isole la liste des candidatures par étudiant</div></td>
+                <td>Réponses <code>200</code> et listes exactes : Lucas reçoit l'offre <code>1</code>, Mateusz l'offre <code>6</code>.</td>
+                <td><span class="badge covered">Couvert</span></td>
+              </tr>
+              <tr>
+                <td>EF-33</td>
+                <td>Retourner les informations utiles de l'offre, de l'entreprise et le statut.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">crée une candidature avec et sans message</div></td>
+                <td>Les assertions vérifient <code>offerId</code> et <code>status</code> dans la liste.</td>
+                <td><span class="badge partial">Partiel</span><br><small>Titre et entreprise non assertés explicitement.</small></td>
+              </tr>
+              <tr>
+                <td>EF-33</td>
+                <td>Exposer les quatre statuts : <code>IN_PROGRESS</code>, <code>SELECTED</code>, <code>REJECTED</code>, <code>WITHDRAWN</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a><div class="test-name">tests de création, retrait et réactivation</div></td>
+                <td><code>IN_PROGRESS</code>, <code>WITHDRAWN</code> et <code>SELECTED</code> sont vérifiés par assertions.</td>
+                <td><span class="badge partial">Partiel</span><br><small><code>REJECTED</code> est présent dans le seed mais non asserté par cette route.</small></td>
+              </tr>
+              <tr>
+                <td>EF-33</td>
+                <td>Un contact ne doit pas être assimilé à un étudiant et ne peut pas consulter <code>/applications/mine</code>.</td>
+                <td><a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/auth.test.ts">auth.test.ts</a><div class="test-name">refuse les contacts et les offres non publiées</div></td>
+                <td>Le test vérifie l'interdiction de candidater par un contact ; il ne teste pas <code>GET /applications/mine</code>.</td>
+                <td><span class="badge absent">Absent</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="other-title">
+        <h2 id="other-title">Comportements testés hors EF-32 / EF-33</h2>
+        <div class="two-columns">
+          <article>
+            <h3>Fonctionnalité contact d'entreprise</h3>
+            <p>
+              <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/companies.test.ts">companies.test.ts</a>
+              vérifie que le contact peut lister et modifier les candidatures
+              des offres de ses entreprises.
+            </p>
+            <ul>
+              <li>Liste <code>200</code> contenant les candidatures attendues.</li>
+              <li>Modification vers <code>SELECTED</code> réussie.</li>
+              <li>Contact d'une autre entreprise refusé avec <code>404 APPLICATION_NOT_FOUND</code>.</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Données de démonstration</h3>
+            <p>
+              Le <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/docs/seed.md">seed</a> fournit des cas utiles pour les
+              essais manuels : deux candidatures en cours, une candidature
+              retenue, une non retenue et une retirée.
+            </p>
+            <p>
+              Ces données ne remplacent pas une assertion de test : elles
+              permettent surtout de reproduire les parcours dans l'interface.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="gaps-title">
+        <h2 id="gaps-title">Manques identifiés et traitement</h2>
+        <div class="two-columns">
+          <article>
+            <h3>Manques conservés</h3>
+            <ul>
+              <li>Ajouter un test dédié au retrait d'une candidature <code>REJECTED</code>.</li>
+              <li>Vérifier explicitement le titre et le nom de l'entreprise dans la réponse EF-33.</li>
+              <li>Vérifier explicitement le statut <code>REJECTED</code> via <code>GET /applications/mine</code>.</li>
+              <li>Ajouter un test de refus de <code>GET /applications/mine</code> pour un contact.</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Pourquoi ces cas restent des limites</h3>
+            <p>
+              Ils ne bloquent pas les règles principales déjà vérifiées, mais
+              leur absence empêche de déclarer une couverture complète de tous
+              les statuts et de tous les profils. Aucun test end-to-end navigateur
+              n'est présent ; la validation UI reste manuelle.
+            </p>
+          </article>
+        </div>
+        <p class="note">
+          Les tests ajoutés dans <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/backend/tests/offers.test.ts">offers.test.ts</a>
+          feraient échouer la suite si l'API acceptait un doublon actif ou
+          convertissait silencieusement un <code>offerId</code> invalide.
+        </p>
+      </section>
+
+      <section aria-labelledby="check-title">
+        <h2 id="check-title">Vérification globale</h2>
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr><th>Contrôle</th><th>Commande</th><th>Résultat</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Lint</td><td><code>npm.cmd run check</code> → <code>npm run lint</code></td><td><span class="badge covered">Réussi</span></td></tr>
+              <tr><td>Typecheck</td><td><code>npm.cmd run check</code> → <code>npm run typecheck</code></td><td><span class="badge covered">Réussi</span></td></tr>
+              <tr><td>Tests backend</td><td><code>npm.cmd run check</code></td><td><span class="badge covered">14 fichiers · 120 tests</span></td></tr>
+              <tr><td>Tests frontend</td><td><code>npm.cmd run check</code></td><td><span class="badge covered">7 fichiers · 47 tests</span></td></tr>
+              <tr><td>Build</td><td><code>npm.cmd run check</code> → <code>npm run build</code></td><td><span class="badge covered">Réussi</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        Source des exigences :
+        <a href="https://github.com/axel-lefranc-vinci/BINV32203BIN2-groupe-20/blob/main/docs/cdc_gesta_developpement.md">docs/cdc_gesta_developpement.md</a>,
+        EF-32 et EF-33. Page générée à partir des tests réellement présents dans le dépôt.
+      </footer>
+    </main>
+  </body>
+</html>

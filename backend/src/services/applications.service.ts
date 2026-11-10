@@ -35,6 +35,34 @@ export const createApplicationsService = (repository: ApplicationsRepository) =>
     return repository.findByStudent(viewer.id).map(toApplication);
   },
 
+  listForCompanyContact: (viewer: User): Application[] => {
+    if (viewer.kind !== "CONTACT" || viewer.companies.length === 0) {
+      throw new HttpError(403, "FORBIDDEN", "Seul un contact d'entreprise peut consulter ces candidatures");
+    }
+    return repository.findByCompanyContact(viewer.id).map(toApplication);
+  },
+
+  updateStatus: (viewer: User, applicationId: number, status: Application["status"]): Application => {
+    if (viewer.kind !== "CONTACT" || viewer.companies.length === 0) {
+      throw new HttpError(403, "FORBIDDEN", "Seul un contact d'entreprise peut modifier une candidature");
+    }
+    if (status === "WITHDRAWN") {
+      throw new HttpError(400, "INVALID_STATUS", "Un contact ne peut pas retirer une candidature");
+    }
+    const application = repository.findByIdAndCompanyContact(applicationId, viewer.id);
+    if (application === undefined) {
+      throw new HttpError(404, "APPLICATION_NOT_FOUND", "Candidature introuvable");
+    }
+    if (application.status === "WITHDRAWN") {
+      throw new HttpError(409, "APPLICATION_NOT_MODIFIABLE", "Cette candidature a été retirée");
+    }
+    const updated = repository.updateStatus(applicationId, status);
+    if (updated === undefined) {
+      throw new HttpError(409, "APPLICATION_NOT_MODIFIABLE", "Modification impossible");
+    }
+    return toApplication(updated);
+  },
+
   withdraw: (viewer: User, applicationId: number): Application => {
     if (!isStudent(viewer)) {
       throw new HttpError(403, "FORBIDDEN", "Seul un étudiant peut retirer une candidature");

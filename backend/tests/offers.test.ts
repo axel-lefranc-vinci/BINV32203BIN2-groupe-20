@@ -50,6 +50,77 @@ describe("GET /offers : visibilité selon le profil", () => {
     });
   });
 
+  describe("POST /applications : parcours étudiant", () => {
+    it("crée une candidature avec et sans message, puis la relit", async () => {
+      const token = tokenFor("STUDENT", STUDENT.DMYTRO_KOVALENKO);
+      const withMessage = await request(app)
+        .post("/applications")
+        .set("Authorization", token)
+        .send({ offerId: OFFER.INTERNAL_CHATBOT, message: "Projet intéressant" });
+      const withoutMessage = await request(app)
+        .post("/applications")
+        .set("Authorization", token)
+        .send({ offerId: OFFER.DATA_QUALITY });
+      const mine = await request(app).get("/applications/mine").set("Authorization", token);
+
+      expect(withMessage.status).toBe(201);
+      expect(withMessage.body.message).toBe("Projet intéressant");
+      expect(withoutMessage.status).toBe(201);
+      expect(withoutMessage.body.message).toBeNull();
+      expect(mine.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ offerId: OFFER.INTERNAL_CHATBOT, status: "IN_PROGRESS" }),
+          expect.objectContaining({ offerId: OFFER.DATA_QUALITY, status: "IN_PROGRESS" }),
+        ]),
+      );
+    });
+
+    it("refuse un doublon actif et un corps invalide", async () => {
+      const token = tokenFor("STUDENT", STUDENT.LUCAS_DUPONT);
+      const duplicate = await request(app)
+        .post("/applications")
+        .set("Authorization", token)
+        .send({ offerId: OFFER.FLEET_APP, message: "Deuxième candidature" });
+      const invalid = await request(app)
+        .post("/applications")
+        .set("Authorization", token)
+        .send({ offerId: "1" });
+
+      expect(duplicate.status).toBe(409);
+      expect(duplicate.body.error.code).toBe("APPLICATION_EXISTS");
+      expect(invalid.status).toBe(400);
+      expect(invalid.body.error.code).toBe("INVALID_BODY");
+    });
+  });
+
+  describe("DELETE /applications et transitions", () => {
+    it("retire une candidature en cours puis la réactive", async () => {
+      const token = tokenFor("STUDENT", STUDENT.LUCAS_DUPONT);
+      const withdrawn = await request(app)
+        .delete("/applications/1")
+        .set("Authorization", token);
+      const reapplied = await request(app)
+        .post("/applications")
+        .set("Authorization", token)
+        .send({ offerId: OFFER.FLEET_APP, message: "Nouveau message" });
+
+      expect(withdrawn.status).toBe(200);
+      expect(withdrawn.body.status).toBe("WITHDRAWN");
+      expect(reapplied.status).toBe(201);
+      expect(reapplied.body.id).toBe(1);
+      expect(reapplied.body.status).toBe("IN_PROGRESS");
+    });
+
+    it("refuse le retrait d'une candidature traitée", async () => {
+      const response = await request(app)
+        .delete("/applications/3")
+        .set("Authorization", tokenFor("STUDENT", STUDENT.MATEUSZ_KOWALSKI));
+
+      expect(response.status).toBe(409);
+      expect(response.body.error.code).toBe("APPLICATION_NOT_WITHDRAWABLE");
+    });
+  });
+
   describe("GET /offers : filtre de période", () => {
     it("filtre les offres d'un administrateur sans modifier les règles de visibilité", async () => {
       const response = await request(app)

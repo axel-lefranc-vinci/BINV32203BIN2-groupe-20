@@ -11,6 +11,8 @@ export interface ApplicationDbo {
   id: number;
   offer_id: number;
   student_id: number;
+  student_first_name: string;
+  student_last_name: string;
   offer_title: string;
   company_short_name: string;
   message: string | null;
@@ -28,6 +30,8 @@ export interface Application {
   offerId: number;
   studentId: number;
   offerTitle: string;
+  studentFirstName: string;
+  studentLastName: string;
   companyShortName: string;
   message: string | null;
   status: ApplicationStatus;
@@ -38,6 +42,8 @@ export interface ApplicationDto {
   id: number;
   offerId: number;
   offerTitle: string;
+  studentFirstName?: string;
+  studentLastName?: string;
   companyShortName: string;
   message: string | null;
   status: ApplicationStatus;
