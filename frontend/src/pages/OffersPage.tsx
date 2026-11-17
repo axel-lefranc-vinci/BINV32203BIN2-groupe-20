@@ -23,8 +23,9 @@ const DESCRIPTIONS = {
 
 const OffersPage = ({ user, token, onUnauthorized }: OffersPageProps) => {
   const [period, setPeriod] = useState<PeriodCode | undefined>();
+  const [search, setSearch] = useState("");
   const [appliedOfferIds, setAppliedOfferIds] = useState<number[]>([]);
-  const { offers, isLoading, error } = useOffers(token, onUnauthorized, period);
+  const { offers, isLoading, error } = useOffers(token, onUnauthorized, period, search);
   const applications = useApplications(token, onUnauthorized);
   const myApplications = useMyApplications(token, onUnauthorized, user.kind === "STUDENT");
   const blockedOfferIds = myApplications.applications
@@ -60,7 +61,17 @@ const OffersPage = ({ user, token, onUnauthorized }: OffersPageProps) => {
     if (error) return <ErrorState message={error} />;
     if (applications.error) return <ErrorState message={applications.error} />;
     if (isLoading) return <LoadingState />;
-    if (offers.length === 0) return <EmptyState message="Aucune offre à afficher." />;
+    if (offers.length === 0) {
+      return (
+        <EmptyState
+          message={
+            search.trim()
+              ? "Aucune offre ne correspond à votre recherche."
+              : "Aucune offre à afficher."
+          }
+        />
+      );
+    }
     return (
       <>
         <p className="result-count">
@@ -86,6 +97,16 @@ const OffersPage = ({ user, token, onUnauthorized }: OffersPageProps) => {
     <section>
       <h1>Offres de stage</h1>
       <p>{DESCRIPTIONS[user.kind]}</p>
+      <label className="search-field">
+        Recherche
+        <input
+          aria-label="Recherche"
+          type="search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Rechercher dans les titres"
+        />
+      </label>
       <label className="offers-filter">
         Période
         <select
