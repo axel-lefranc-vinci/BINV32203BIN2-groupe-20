@@ -13,6 +13,33 @@ export const getMyApplications = async (
   return readJson(response, isApplicationList, "Chargement des candidatures impossible");
 };
 
+export const getCompanyApplications = async (
+  token: string,
+  signal?: AbortSignal,
+): Promise<Application[]> => {
+  const response = await fetch(`${API_URL}/applications/company`, {
+    headers: { Authorization: token },
+    signal,
+  });
+  return readJson(response, isApplicationList, "Chargement des candidatures impossible");
+};
+
+export const updateApplicationStatus = async (
+  token: string,
+  applicationId: number,
+  status: Application["status"],
+): Promise<Application> => {
+  const response = await fetch(`${API_URL}/applications/${applicationId}/status`, {
+    method: "PATCH",
+    headers: {
+      Authorization: token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+  return readJson(response, isApplication, "Modification du statut impossible");
+};
+
 export const createApplication = async (
   token: string,
   offerId: number,

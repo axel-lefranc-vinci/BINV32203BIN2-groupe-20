@@ -5,6 +5,7 @@ import LoadingState from "./components/LoadingState.tsx";
 import { useAuth } from "./hooks/useAuth.ts";
 import CompaniesPage from "./pages/CompaniesPage.tsx";
 import ApplicationsPage from "./pages/ApplicationsPage.tsx";
+import CompanyApplicationsPage from "./pages/CompanyApplicationsPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import NotFoundPage from "./pages/NotFoundPage.tsx";
@@ -36,6 +37,12 @@ const App = () => {
             element={
               <ApplicationsPage token={auth.token} onUnauthorized={auth.logout} />
             }
+          />
+        )}
+        {auth.user.kind === "CONTACT" && (
+          <Route
+            path="/candidatures"
+            element={<CompanyApplicationsPage token={auth.token} onUnauthorized={auth.logout} />}
           />
         )}
         <Route

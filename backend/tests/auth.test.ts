@@ -3,7 +3,7 @@ import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 import { assertDemoAuthAllowed } from "../src/config.ts";
 import type { Db } from "../src/db/database.ts";
-import { ADMINISTRATOR, CONTACT, STUDENT } from "../src/db/seed/seedIds.ts";
+import { ADMINISTRATOR, CONTACT, OFFER, STUDENT } from "../src/db/seed/seedIds.ts";
 import { TEST_AUTH_CONFIG, createTestApp, tokenFor } from "./helpers/testApp.ts";
 import { createTestDatabase } from "./helpers/testDatabase.ts";
 
@@ -187,5 +187,41 @@ describe("garde du mode démo", () => {
     expect(() => assertDemoAuthAllowed("production", false)).not.toThrow();
     expect(() => assertDemoAuthAllowed("development", true)).not.toThrow();
     expect(() => assertDemoAuthAllowed(undefined, true)).not.toThrow();
+  });
+});
+
+describe("autorisation des candidatures", () => {
+  it("refuse les contacts et les offres non publiées", async () => {
+    const contactResponse = await request(app)
+      .post("/applications")
+      .set("Authorization", tokenFor("CONTACT", CONTACT.MEHDI_ALAOUI))
+      .send({ offerId: 1 });
+    const unpublishedResponse = await request(app)
+      .post("/applications")
+      .set("Authorization", tokenFor("STUDENT", STUDENT.DMYTRO_KOVALENKO))
+      .send({ offerId: 2 });
+
+    expect(contactResponse.status).toBe(403);
+    expect(contactResponse.body.error.code).toBe("FORBIDDEN");
+    expect(unpublishedResponse.status).toBe(409);
+    expect(unpublishedResponse.body.error.code).toBe("OFFER_NOT_PUBLISHED");
+  });
+
+  it("isole la liste des candidatures par étudiant", async () => {
+    const lucas = await request(app)
+      .get("/applications/mine")
+      .set("Authorization", tokenFor("STUDENT", STUDENT.LUCAS_DUPONT));
+    const mateusz = await request(app)
+      .get("/applications/mine")
+      .set("Authorization", tokenFor("STUDENT", STUDENT.MATEUSZ_KOWALSKI));
+
+    expect(lucas.status).toBe(200);
+    expect(mateusz.status).toBe(200);
+    expect(lucas.body).toEqual([
+      expect.objectContaining({ offerId: OFFER.FLEET_APP, status: "IN_PROGRESS" }),
+    ]);
+    expect(mateusz.body).toEqual([
+      expect.objectContaining({ offerId: OFFER.CLOUD_MIGRATION, status: "SELECTED" }),
+    ]);
   });
 });

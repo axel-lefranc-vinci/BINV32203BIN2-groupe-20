@@ -13,6 +13,7 @@ const NavBar = ({ user }: NavBarProps) => (
     </NavLink>
     {canListOffers(user) && <NavLink to="/offres">Offres</NavLink>}
     {user.kind === "STUDENT" && <NavLink to="/candidatures">Mes candidatures</NavLink>}
+    {user.kind === "CONTACT" && <NavLink to="/candidatures">Candidatures</NavLink>}
     <NavLink to="/entreprises">Entreprises</NavLink>
   </nav>
 );

@@ -4,13 +4,18 @@ import { getMyApplications } from "../services/applications.service.ts";
 import { withdrawApplication } from "../services/applications.service.ts";
 import { isUnauthorized } from "../utils/api.ts";
 
-export const useMyApplications = (token: string, onUnauthorized: () => void) => {
+export const useMyApplications = (
+  token: string,
+  onUnauthorized: () => void,
+  enabled = true,
+) => {
   const [applications, setApplications] = useState<Application[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   useEffect(() => {
+    if (!enabled) return;
     const controller = new AbortController();
 
     getMyApplications(token, controller.signal)
@@ -30,7 +35,7 @@ export const useMyApplications = (token: string, onUnauthorized: () => void) => 
       });
 
     return () => controller.abort();
-  }, [token, onUnauthorized]);
+  }, [token, onUnauthorized, enabled]);
 
   const withdraw = async (applicationId: number): Promise<boolean> => {
     setIsWithdrawing(true);

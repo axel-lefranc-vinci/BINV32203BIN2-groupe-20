@@ -26,7 +26,7 @@ const OffersPage = ({ user, token, onUnauthorized }: OffersPageProps) => {
   const [appliedOfferIds, setAppliedOfferIds] = useState<number[]>([]);
   const { offers, isLoading, error } = useOffers(token, onUnauthorized, period);
   const applications = useApplications(token, onUnauthorized);
-  const myApplications = useMyApplications(token, onUnauthorized);
+  const myApplications = useMyApplications(token, onUnauthorized, user.kind === "STUDENT");
   const blockedOfferIds = myApplications.applications
     .filter((application) => application.status !== "WITHDRAWN")
     .map((application) => application.offerId);

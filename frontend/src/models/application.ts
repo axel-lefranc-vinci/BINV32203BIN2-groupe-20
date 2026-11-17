@@ -11,6 +11,8 @@ export interface Application {
   id: number;
   offerId: number;
   offerTitle: string;
+  studentFirstName?: string;
+  studentLastName?: string;
   companyShortName: string;
   message: string | null;
   status: ApplicationStatus;

@@ -16,11 +16,13 @@ interface OfferStatus {
 }
 
 const applicationSelect = `
-  SELECT a.id, a.offer_id, a.student_id, o.title AS offer_title,
+  SELECT a.id, a.offer_id, a.student_id, s.first_name AS student_first_name,
+         s.last_name AS student_last_name, o.title AS offer_title,
          c.short_name AS company_short_name, a.message, a.status, a.applied_at
   FROM applications a
   JOIN offers o ON o.id = a.offer_id
   JOIN companies c ON c.id = o.company_id
+  JOIN students s ON s.id = a.student_id
 `;
 
 export const createApplicationsRepository = (db: Db) => {
@@ -44,6 +46,10 @@ export const createApplicationsRepository = (db: Db) => {
     UPDATE applications
     SET status = 'WITHDRAWN'
     WHERE id = @id AND student_id = @studentId AND status = 'IN_PROGRESS'
+  `);
+  const updateApplicationStatus = db.prepare(`
+    UPDATE applications SET status = @status
+    WHERE id = @id AND status <> 'WITHDRAWN'
   `);
 
   const save = db.transaction((input: CreateApplicationInput, studentId: number): ApplicationDbo => {
@@ -74,6 +80,24 @@ export const createApplicationsRepository = (db: Db) => {
           ORDER BY a.applied_at DESC, a.id DESC
         `)
         .all({ studentId }),
+    findByCompanyContact: (contactId: number): ApplicationDbo[] =>
+      db
+        .prepare<{ contactId: number }, ApplicationDbo>(`
+          ${applicationSelect}
+          JOIN company_contacts cc
+            ON cc.company_id = o.company_id AND cc.contact_id = @contactId
+          ORDER BY a.applied_at DESC, a.id DESC
+        `)
+        .all({ contactId }),
+    findByIdAndCompanyContact: (id: number, contactId: number): ApplicationDbo | undefined =>
+      db
+        .prepare<{ id: number; contactId: number }, ApplicationDbo>(`
+          ${applicationSelect}
+          JOIN company_contacts cc
+            ON cc.company_id = o.company_id AND cc.contact_id = @contactId
+          WHERE a.id = @id
+        `)
+        .get({ id, contactId }),
     findByKey: (offerId: number, studentId: number): ApplicationDbo | undefined =>
       findByKey.get({ offerId, studentId }),
     findByIdAndStudent: (id: number, studentId: number): ApplicationDbo | undefined =>
@@ -91,6 +115,15 @@ export const createApplicationsRepository = (db: Db) => {
           WHERE a.id = @id AND a.student_id = @studentId
         `)
         .get({ id, studentId });
+    },
+    updateStatus: (id: number, status: ApplicationDbo["status"]): ApplicationDbo | undefined => {
+      updateApplicationStatus.run({ id, status });
+      return db
+        .prepare<{ id: number }, ApplicationDbo>(`
+          ${applicationSelect}
+          WHERE a.id = @id
+        `)
+        .get({ id });
     },
     findOfferStatus: (offerId: number): string | undefined =>
       findOfferStatus.get({ offerId })?.status,
