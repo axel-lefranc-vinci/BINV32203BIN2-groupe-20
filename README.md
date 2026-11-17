@@ -88,7 +88,7 @@ Les outils ont été choisis pour rester simples et lisibles :
 - Connexion de démonstration, navigation adaptée au profil, déconnexion.
 - **Entreprises** : liste et recherche par nom (`GET /companies`). Un administrateur voit
   toutes les entreprises ; les autres utilisateurs, seulement les entreprises actives.
-- **Offres** : liste en lecture seule (`GET /offers`), filtrée selon le profil :
+- **Offres** : liste en lecture seule (`GET /offers`), recherchable par titre et filtrée selon le profil :
   - l'administrateur voit toutes les offres ;
   - l'étudiant voit les offres publiées ;
   - le déposant voit les offres qu'il a déposées ;

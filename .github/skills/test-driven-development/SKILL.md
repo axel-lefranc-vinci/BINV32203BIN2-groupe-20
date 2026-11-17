@@ -3,6 +3,12 @@ name: test-driven-development
 description: Use when implementing any feature or bugfix, before writing implementation code
 ---
 
+Avant l’implémentation, prépare un petit lot de tests, exécute-les et explique les
+résultats attendus et observés. Termine ta réponse en demandant à l’utilisateur
+de valider les tests. Attends sa réponse explicite avant de modifier le code de
+l’application. Préserve le code existant du projet. Si un nouveau choix métier
+apparaît ensuite, demande une nouvelle validation.
+
 # Test-Driven Development (TDD)
 
 ## Overview
