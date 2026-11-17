@@ -207,6 +207,15 @@ describe("autorisation des candidatures", () => {
     expect(unpublishedResponse.body.error.code).toBe("OFFER_NOT_PUBLISHED");
   });
 
+  it("refuse à un contact de consulter les candidatures d'un étudiant", async () => {
+    const response = await request(app)
+      .get("/applications/mine")
+      .set("Authorization", tokenFor("CONTACT", CONTACT.MEHDI_ALAOUI));
+
+    expect(response.status).toBe(403);
+    expect(response.body.error.code).toBe("FORBIDDEN");
+  });
+
   it("isole la liste des candidatures par étudiant", async () => {
     const lucas = await request(app)
       .get("/applications/mine")
