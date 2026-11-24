@@ -1,0 +1,19 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]: Gesta
+  - note [ref=e5]: Mode démo — connexion sans mot de passe, réservée au développement local.
+  - main [ref=e6]:
+    - generic [ref=e7]:
+      - heading "Connexion de démonstration" [level=1] [ref=e8]
+      - paragraph [ref=e9]: "Choisissez un utilisateur fictif. Il n'y a pas de mot de passe : ce mode remplace, en développement local uniquement, la connexion par lien envoyé par e-mail."
+      - status [ref=e10]: Chargement des utilisateurs…
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - heading "Administrateurs" [level=2] [ref=e13]
+          - list
+        - generic [ref=e14]:
+          - heading "Étudiants" [level=2] [ref=e15]
+          - list
+        - generic [ref=e16]:
+          - heading "Contacts d'entreprise" [level=2] [ref=e17]
+          - list
