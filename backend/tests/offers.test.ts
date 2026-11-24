@@ -152,6 +152,51 @@ describe("GET /offers : visibilité selon le profil", () => {
     });
   });
 
+  describe("GET /offers : recherche par titre", () => {
+    it("recherche une expression insensible à la casse en ignorant les espaces extérieurs", async () => {
+      const response = await request(app)
+        .get("/offers?search=%20PORTAIL%20CLIENT%20")
+        .set("Authorization", tokenFor("ADMIN", ADMINISTRATOR.ANNE_LECLERCQ));
+
+      expect(response.status).toBe(200);
+      expect(offerIds(response.body)).toEqual([OFFER.CLIENT_PORTAL]);
+    });
+
+    it("combine la recherche avec la période et conserve la visibilité publiée pour un étudiant", async () => {
+      const response = await request(app)
+        .get("/offers?search=application&period=P2")
+        .set("Authorization", tokenFor("STUDENT", STUDENT.LUCAS_DUPONT));
+
+      expect(response.status).toBe(200);
+      expect(offerIds(response.body)).toEqual([OFFER.FLEET_APP]);
+      expect(response.body.every((offer: { status: string; period: string }) =>
+        offer.status === "PUBLISHED" && offer.period === "P2")).toBe(true);
+    });
+
+    it("retourne normalement les offres avec une recherche vide", async () => {
+      const response = await request(app)
+        .get("/offers?search=%20%20")
+        .set("Authorization", tokenFor("STUDENT", STUDENT.LUCAS_DUPONT));
+
+      expect(response.status).toBe(200);
+      expect(offerIds(response.body)).toEqual([
+        OFFER.INTERNAL_CHATBOT,
+        OFFER.DATA_QUALITY,
+        OFFER.FLEET_APP,
+        OFFER.BILLING_API,
+      ]);
+    });
+
+    it("retourne une liste vide sans correspondance", async () => {
+      const response = await request(app)
+        .get("/offers?search=expression-inexistante")
+        .set("Authorization", tokenFor("ADMIN", ADMINISTRATOR.ANNE_LECLERCQ));
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([]);
+    });
+  });
+
   it("ne montre que les offres publiées à un étudiant", async () => {
     const response = await listOffersAs("STUDENT", STUDENT.LUCAS_DUPONT);
 

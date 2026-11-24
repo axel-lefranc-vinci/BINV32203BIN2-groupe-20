@@ -1,0 +1,53 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]: Gesta
+    - navigation "Navigation principale" [ref=e122]:
+      - link "Accueil" [ref=e123] [cursor=pointer]:
+        - /url: /
+      - link "Offres" [ref=e124] [cursor=pointer]:
+        - /url: /offres
+      - link "Mes candidatures" [ref=e125] [cursor=pointer]:
+        - /url: /candidatures
+      - link "Entreprises" [ref=e126] [cursor=pointer]:
+        - /url: /entreprises
+    - generic [ref=e127]:
+      - generic [ref=e128]:
+        - strong [ref=e129]: Lucas Dupont
+        - generic [ref=e130]: Étudiant
+      - button "Changer d'utilisateur" [ref=e131] [cursor=pointer]
+  - note [ref=e5]: Mode démo — connexion sans mot de passe, réservée au développement local.
+  - main [ref=e6]:
+    - generic [ref=e136]:
+      - heading "Offres de stage" [level=1] [ref=e137]
+      - paragraph [ref=e138]: Les offres publiées.
+      - generic [ref=e139]:
+        - text: Recherche
+        - searchbox "Recherche" [active] [ref=e140]: aPpLiCAtIoN
+      - generic [ref=e141]:
+        - text: Période
+        - combobox "Période" [ref=e142] [cursor=pointer]:
+          - option "Toutes les périodes"
+          - option "P1"
+          - option "P2" [selected]
+          - option "Autre"
+      - paragraph [ref=e143]: 1 offre
+      - table [ref=e145]:
+        - rowgroup [ref=e146]:
+          - row [ref=e147]:
+            - columnheader "Titre" [ref=e148]
+            - columnheader "Entreprise" [ref=e149]
+            - columnheader "Année" [ref=e150]
+            - columnheader "Période" [ref=e151]
+            - columnheader "Statut" [ref=e152]
+            - columnheader "Candidature" [ref=e153]
+        - rowgroup [ref=e154]:
+          - row [ref=e181]:
+            - cell "Application React de gestion de flotte" [ref=e182]
+            - cell "Lumen Digital" [ref=e183]
+            - cell "2026-2027" [ref=e184]
+            - cell "P2" [ref=e185]
+            - cell "Publiée" [ref=e186]
+            - cell [ref=e188]:
+              - generic [ref=e189]:
+                - button "Candidature déjà postulée" [disabled] [ref=e190]
+                - button "Retirer" [ref=e191] [cursor=pointer]

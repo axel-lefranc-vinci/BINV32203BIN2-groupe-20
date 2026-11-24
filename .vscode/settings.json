@@ -74,9 +74,9 @@
   "chat.agent.sandbox.credentials.authenticategh": false,
 
   // Les processus auxiliaires lancés par Copilot restent confinés.
-  "chat.agent.sandbox.mcpServers": true,
+  "chat.agent.sandbox.mcpServers": false,
   "chat.agent.sandbox.lspServers": true,
 
   // Bloque également les outils Fetch et navigateur intégrés.
-  "chat.agent.networkFilter": true
+  "chat.agent.networkFilter": false
 }

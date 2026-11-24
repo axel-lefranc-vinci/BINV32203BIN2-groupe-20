@@ -1,0 +1,23 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]: Gesta
+    - navigation "Navigation principale" [ref=e122]:
+      - link "Accueil" [ref=e123] [cursor=pointer]:
+        - /url: /
+      - link "Offres" [ref=e124] [cursor=pointer]:
+        - /url: /offres
+      - link "Mes candidatures" [ref=e125] [cursor=pointer]:
+        - /url: /candidatures
+      - link "Entreprises" [ref=e126] [cursor=pointer]:
+        - /url: /entreprises
+    - generic [ref=e127]:
+      - generic [ref=e128]:
+        - strong [ref=e129]: Lucas Dupont
+        - generic [ref=e130]: Étudiant
+      - button "Changer d'utilisateur" [ref=e131] [cursor=pointer]
+  - note [ref=e5]: Mode démo — connexion sans mot de passe, réservée au développement local.
+  - main [ref=e6]:
+    - generic [ref=e132]:
+      - heading "Bonjour Lucas" [level=1] [ref=e133]
+      - paragraph [ref=e134]: Vous êtes connecté en tant que étudiant.
+      - paragraph [ref=e135]: Gesta — API connectée
